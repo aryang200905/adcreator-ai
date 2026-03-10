@@ -1,0 +1,86 @@
+"use client";
+
+import DashboardLayout from "../../../components/layout/DashboardLayout";
+import { useAuth } from "../../../context/AuthContext";
+import { Settings, User, Bell, Shield, CreditCard } from "lucide-react";
+
+export default function SettingsPage() {
+  const { user } = useAuth();
+
+  return (
+    <DashboardLayout>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
+        <p className="text-muted-foreground">Manage your account preferences and team settings.</p>
+      </div>
+
+      <div className="grid lg:grid-cols-4 gap-8">
+        {/* Settings Navigation */}
+        <div className="space-y-2">
+          <button className="w-full flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary font-medium rounded-xl transition-all">
+            <User size={18} /> Profile
+          </button>
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:bg-white/5 hover:text-white font-medium rounded-xl transition-all">
+            <CreditCard size={18} /> Billing
+          </button>
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:bg-white/5 hover:text-white font-medium rounded-xl transition-all">
+            <Bell size={18} /> Notifications
+          </button>
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:bg-white/5 hover:text-white font-medium rounded-xl transition-all">
+            <Shield size={18} /> Security
+          </button>
+        </div>
+
+        {/* Settings Content */}
+        <div className="lg:col-span-3 space-y-6">
+          <div className="bg-card/40 border border-border/50 rounded-2xl p-6 backdrop-blur-md">
+            <h2 className="text-xl font-bold text-white mb-6">Profile Information</h2>
+            
+            <div className="flex items-center gap-6 mb-8">
+              {user?.photoURL ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={user.photoURL} alt="Profile" className="w-20 h-20 rounded-full border-2 border-primary/50" />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-3xl border-2 border-primary/50">
+                  {user?.displayName?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                </div>
+              )}
+              <div>
+                <button className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition-colors mb-2">
+                  Change Photo
+                </button>
+                <p className="text-xs text-muted-foreground">JPG, GIF or PNG. Max size of 800K</p>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="text-sm font-medium text-gray-300 mb-1.5 block">Full Name</label>
+                <input
+                  type="text"
+                  defaultValue={user?.displayName || ''}
+                  className="w-full h-11 bg-input/50 border border-border rounded-xl px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-300 mb-1.5 block">Email Address</label>
+                <input
+                  type="email"
+                  defaultValue={user?.email || ''}
+                  disabled
+                  className="w-full h-11 bg-black/20 border border-border/50 rounded-xl px-4 text-gray-400 cursor-not-allowed"
+                />
+              </div>
+            </div>
+
+            <div className="mt-8 flex justify-end">
+              <button className="h-11 px-6 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
