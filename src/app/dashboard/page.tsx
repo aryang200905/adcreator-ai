@@ -48,36 +48,38 @@ export default function DashboardPage() {
 
         {/* Existing Projects */}
         {projects.map((project) => (
-          <div key={project.id} className="h-full min-h-[220px] rounded-2xl border border-border/50 bg-card/40 hover:bg-card/60 backdrop-blur-sm transition-all flex flex-col p-6 relative group cursor-pointer">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
-                <Folder size={20} />
+          <Link href={`/dashboard/project/${project.id}`} key={project.id} className="block group">
+            <div className="h-full min-h-[220px] rounded-2xl border border-border/50 bg-card/40 hover:bg-card/60 backdrop-blur-sm transition-all flex flex-col p-6 relative cursor-pointer">
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                  <Folder size={20} />
+                </div>
+                <button className="text-muted-foreground hover:text-white p-1 rounded-md hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <MoreVertical size={16} />
+                </button>
               </div>
-              <button className="text-muted-foreground hover:text-white p-1 rounded-md hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                <MoreVertical size={16} />
-              </button>
-            </div>
-            
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white mb-1">{project.name}</h3>
-              <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-                <Clock size={14} className="text-primary/70" /> {project.date}
-              </p>
-            </div>
+              
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-white mb-1">{project.name}</h3>
+                <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                  <Clock size={14} className="text-primary/70" /> {project.date}
+                </p>
+              </div>
 
-            <div className="flex items-center justify-between mt-6 pt-4 border-t border-border/50">
-              <span className="text-xs font-medium px-2.5 py-1 bg-white/5 rounded-md text-gray-300">
-                {project.items} variants
-              </span>
-              <span className={`text-xs font-medium px-2.5 py-1 rounded-md ${
-                project.status === 'Generated' ? 'bg-green-500/10 text-green-400' :
-                project.status === 'Draft' ? 'bg-orange-500/10 text-orange-400' :
-                'bg-blue-500/10 text-blue-400'
-              }`}>
-                {project.status}
-              </span>
+              <div className="flex items-center justify-between mt-6 pt-4 border-t border-border/50">
+                <span className="text-xs font-medium px-2.5 py-1 bg-white/5 rounded-md text-gray-300">
+                  {project.items} variants
+                </span>
+                <span className={`text-xs font-medium px-2.5 py-1 rounded-md ${
+                  project.status === 'Generated' ? 'bg-green-500/10 text-green-400' :
+                  project.status === 'Draft' ? 'bg-orange-500/10 text-orange-400' :
+                  'bg-blue-500/10 text-blue-400'
+                }`}>
+                  {project.status}
+                </span>
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </DashboardLayout>
