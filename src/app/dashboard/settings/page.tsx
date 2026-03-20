@@ -3,9 +3,19 @@
 import DashboardLayout from "../../../components/layout/DashboardLayout";
 import { useAuth } from "../../../context/AuthContext";
 import { Settings, User, Bell, Shield, CreditCard } from "lucide-react";
+import { useState } from "react";
 
 export default function SettingsPage() {
   const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState<'profile' | 'billing' | 'notifications' | 'security'>('profile');
+
+  const getTabClass = (tab: string) => {
+    return `w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all ${
+      activeTab === tab 
+        ? 'bg-primary/10 text-primary' 
+        : 'text-muted-foreground hover:bg-white/5 hover:text-white'
+    }`;
+  };
 
   return (
     <DashboardLayout>
@@ -17,24 +27,25 @@ export default function SettingsPage() {
       <div className="grid lg:grid-cols-4 gap-8">
         {/* Settings Navigation */}
         <div className="space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary font-medium rounded-xl transition-all">
+          <button onClick={() => setActiveTab('profile')} className={getTabClass('profile')}>
             <User size={18} /> Profile
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:bg-white/5 hover:text-white font-medium rounded-xl transition-all">
+          <button onClick={() => setActiveTab('billing')} className={getTabClass('billing')}>
             <CreditCard size={18} /> Billing
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:bg-white/5 hover:text-white font-medium rounded-xl transition-all">
+          <button onClick={() => setActiveTab('notifications')} className={getTabClass('notifications')}>
             <Bell size={18} /> Notifications
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:bg-white/5 hover:text-white font-medium rounded-xl transition-all">
+          <button onClick={() => setActiveTab('security')} className={getTabClass('security')}>
             <Shield size={18} /> Security
           </button>
         </div>
 
         {/* Settings Content */}
         <div className="lg:col-span-3 space-y-6">
-          <div className="bg-card/40 border border-border/50 rounded-2xl p-6 backdrop-blur-md">
-            <h2 className="text-xl font-bold text-white mb-6">Profile Information</h2>
+          {activeTab === 'profile' ? (
+            <div className="bg-card/40 border border-border/50 rounded-2xl p-6 backdrop-blur-md">
+              <h2 className="text-xl font-bold text-white mb-6">Profile Information</h2>
             
             <div className="flex items-center gap-6 mb-8">
               {user?.photoURL ? (
@@ -78,7 +89,20 @@ export default function SettingsPage() {
                 Save Changes
               </button>
             </div>
-          </div>
+            </div>
+          ) : (
+            <div className="bg-card/40 border border-border/50 rounded-2xl p-12 backdrop-blur-md flex flex-col items-center justify-center text-center min-h-[400px]">
+              <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-6">
+                {activeTab === 'billing' && <CreditCard size={32} />}
+                {activeTab === 'notifications' && <Bell size={32} />}
+                {activeTab === 'security' && <Shield size={32} />}
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-3 capitalize">{activeTab}</h2>
+              <p className="text-muted-foreground max-w-sm">
+                This section is currently in development. Check back later for updates as we roll out new features.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>

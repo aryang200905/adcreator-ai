@@ -9,9 +9,16 @@ export default function NewProjectPage() {
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [scripts, setScripts] = useState([{ id: 1, content: "" }]);
+  const [generatedFrom, setGeneratedFrom] = useState("");
+
+  const getFallbackText = (input: string, maxLen: number = 80) => {
+    if (!input) return "your script";
+    return input.length > maxLen ? input.substring(0, maxLen) + "..." : input;
+  };
 
   const handleGenerate = () => {
     setIsGenerating(true);
+    setGeneratedFrom(scripts[0].content);
     // Simulate generation time
     setTimeout(() => {
       setIsGenerating(false);
@@ -192,20 +199,34 @@ export default function NewProjectPage() {
                    </button>
                 </div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/10 text-purple-400 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-purple-500/20">
-                  Angle 1: The Contrarian
+                  PAS Framework (Problem, Agitate, Solve)
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-4">
+                  {generatedFrom && (
+                    <div>
+                      <span className="text-xs font-semibold text-amber-500/80 uppercase tracking-widest block mb-1">Analysis of your Script</span>
+                      <p className="text-sm text-gray-300 leading-relaxed bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
+                        &quot;{getFallbackText(generatedFrom, 80)}&quot; has a good foundation, but the problem isn't agitated enough. Here is exactly what you should write instead using an optimized PAS approach:
+                      </p>
+                    </div>
+                  )}
                   <div>
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Hook</span>
-                    <p className="text-sm text-gray-200 mt-1 font-medium bg-black/20 p-3 rounded-lg border border-white/5">&quot;Stop doing X immediately if you want to achieve Y. Here&apos;s what I wish I knew sooner...&quot;</p>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Hook (Problem + Agitate)</span>
+                    <p className="text-sm text-gray-200 font-medium bg-black/20 p-3 rounded-lg border border-white/5">
+                      "Are you tired of using scripts like {getFallbackText(generatedFrom, 30)} that your audience immediately scrolls past? It's incredibly frustrating when you put in the effort, only to watch your viewers swipe away in 2 seconds because your hook blended in with a thousand other ads."
+                    </p>
                   </div>
                   <div>
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Body</span>
-                    <p className="text-sm text-gray-300 mt-1 leading-relaxed">The old way of solving this problem is broken. Introduce the new mechanism. Show social proof of how it worked for others faster and cheaper.</p>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Body (Solve)</span>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      "But what if there was a way to completely automate this process? Introducing our streamlined workflow that eliminates the guesswork. Instead of trusting your gut, our precise AI instantly writes variants guaranteed to hold attention and drive clicks."
+                    </p>
                   </div>
                   <div>
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">CTA</span>
-                    <p className="text-sm text-gray-200 mt-1 bg-primary/10 text-primary-foreground p-3 rounded-lg font-medium">&quot;Click the link below to get the free blueprint.&quot;</p>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest block mb-1">CTA</span>
+                    <p className="text-sm text-gray-200 bg-primary/10 text-primary-foreground p-3 rounded-lg font-medium">
+                      "Click the link below to transform your approach and get the exact blueprint today."
+                    </p>
                   </div>
                 </div>
               </div>
@@ -218,20 +239,34 @@ export default function NewProjectPage() {
                    </button>
                 </div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-blue-500/20">
-                  Angle 2: Founder Story
+                  BAB Framework (Before, After, Bridge)
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-4">
+                  {generatedFrom && (
+                    <div>
+                      <span className="text-xs font-semibold text-emerald-500/80 uppercase tracking-widest block mb-1">Alternative Approach</span>
+                      <p className="text-sm text-gray-300 leading-relaxed bg-emerald-500/10 p-3 rounded-lg border border-emerald-500/20">
+                        Instead of leading with the problem like in your original script, we can flip it and show the desired "After" state using the BAB framework. Try using this exact script instead:
+                      </p>
+                    </div>
+                  )}
                   <div>
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Hook</span>
-                    <p className="text-sm text-gray-200 mt-1 font-medium bg-black/20 p-3 rounded-lg border border-white/5">&quot;I was struggling with [Pain Point] for years until I discovered this weird trick.&quot;</p>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Hook (Before)</span>
+                    <p className="text-sm text-gray-200 font-medium bg-black/20 p-3 rounded-lg border border-white/5">
+                      "Remember when you had to manually brief designers for every single ad variant, writing {getFallbackText(generatedFrom, 30)} over and over again until your creative team burned out?"
+                    </p>
                   </div>
                   <div>
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Body</span>
-                    <p className="text-sm text-gray-300 mt-1 leading-relaxed">Tell brief origin story. Focus on the &apos;aha&apos; moment. Present the product as the effortless solution that emerged.</p>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest block mb-1">Body (After + Bridge)</span>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      "Imagine a world where your creative bottlenecks disappear entirely. You just paste your top performing ad concept, and get a week's worth of fresh, optimized copy tailored specifically for your audience. That's exactly what AdCreator AI does to bridge the gap between ideation and massive ROAS."
+                    </p>
                   </div>
                   <div>
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">CTA</span>
-                    <p className="text-sm text-gray-200 mt-1 bg-primary/10 text-primary-foreground p-3 rounded-lg font-medium">&quot;Try it risk-free today and see the difference.&quot;</p>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest block mb-1">CTA</span>
+                    <p className="text-sm text-gray-200 bg-primary/10 text-primary-foreground p-3 rounded-lg font-medium">
+                      "Start scaling your ads on autopilot. Try it risk-free today."
+                    </p>
                   </div>
                 </div>
               </div>
