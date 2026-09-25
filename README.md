@@ -1,83 +1,78 @@
 # AdCreator AI
 
-AdCreator AI is a modern Next.js React application designed to help growth marketers, founders, and agencies scale their winning ad patterns. Users can input their top-performing ad scripts and the AI will generate high-converting creative variants (scripts, hooks, CTAs, and storyboards) across multiple angles.
+A Next.js portfolio app for reviewing ad copy, comparing three alternative drafts, and collecting creative references. Firebase powers Google/email sign-in and profile management.
 
 ## Features
 
-- **Project Library:** Manage and track all your ad generation projects from a central dashboard.
-- **Winning Ad Extractor:** Input up to 5 successful ad scripts to extract core patterns (hooks, structure, proof type).
-- **Variant Generation Wizard:** Receive an "Angle Board" with fully generated scripts and CTAs tailored to different psychological angles (e.g., Contrarian, Founder Story).
-- **Modern UI:** Built with Next.js, Tailwind CSS v4, Framer Motion, and Radix UI primitives for a sleek, dark-themed glassmorphism aesthetic.
-- **Authentication:** Secure Google and Email/Password login powered by Firebase Authentication.
+- Persistent purple dark and white light themes, including the sign-in screen.
+- Five clearly labeled fictional example drafts with creative artwork.
+- Campaign-specific strengths, weaknesses, actionable improvements and three alternative scripts. Optional OpenAI integration; an explicitly labeled local structural reviewer works without a provider key.
+- Six distinct advertising placements with links to official guidance, plus eight editorial voice presets.
+- Six starter frameworks, user templates, social links and image references. Save a rewrite as a template and reuse it in a project.
+- Save and reopen project drafts. Projects and templates are account-scoped **in this browser**, not synced across devices. Clearing browser storage deletes them.
+- Profile name editing, compressed photo uploads to Firebase Storage, and password reset email.
 
-## Tech Stack
+## Local development
 
-*   **Framework:** [Next.js](https://nextjs.org/) (App Router)
-*   **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-*   **Components:** [Radix UI](https://www.radix-ui.com/) & [Lucide Icons](https://lucide.dev/)
-*   **Animations:** [Framer Motion](https://www.framer.com/motion/)
-*   **Authentication:** [Firebase Auth](https://firebase.google.com/)
-*   **Language:** TypeScript
+Use Node.js 20.9 or newer. Run `npm ci`, configure `.env.local`, and run `npm run dev`.
 
----
+Firebase public configuration keys (copy values from your Firebase web app configuration):
 
-## 🚀 Getting Started Locally
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+```
 
-### Prerequisites
-Make sure you have Node.js 18+ installed on your machine.
+Enable Google and Email/Password in Firebase Authentication. Add localhost and your production hostname to Firebase Authentication's authorized domains.
 
-### Installation
+### Profile photos
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/adcreator-ai.git
-   cd adcreator-ai
-   npm install
-   ```
+Enable Firebase Storage and set the correct bucket name. Apply the owner-only avatar rules in `storage.rules` using the Firebase console, merging them with any rules needed by other applications. The app uploads a compressed JPEG to `users/{uid}/avatar.jpg` and saves its download URL in Firebase Auth. Rules are included here but are **not automatically deployed**. A Storage download URL contains a bearer token; treat it as a shareable image URL. Removing a photo clears the profile reference; it does not delete the stored file.
 
-3. **Firebase Setup:**
-   The project is pre-configured with a Firebase project in `src/lib/firebase.ts`. If you fork this project for production, you should replace the `firebaseConfig` object with your own Firebase project credentials and enable **Email/Password** and **Google Sign-In** in the Firebase Authentication console.
+### AI reviews (optional)
 
-4. **Run the development server:**
-   ```bash
-   npm run dev
-   ```
+Set these **server-only** environment variables in Vercel and `.env.local`:
 
-5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o-mini
+AI_ALLOWED_UIDS=
+```
 
----
+`AI_ALLOWED_UIDS` is a comma-separated list of Firebase user IDs allowed to use paid AI generation. Find IDs under Firebase Authentication → Users. The route fails closed when configuration is missing, and the UI identifies the local fallback. Never prefix these keys with `NEXT_PUBLIC_` or commit real values.
 
-## ☁️ Deploying to Vercel
+The server verifies the Firebase ID token with Firebase's accounts lookup endpoint before calling OpenAI's Responses API. It validates inputs and structured outputs, applies timeouts, caps input/output sizes and limits each allowlisted account to five requests per minute **per warm server instance**. This burst limit is not a distributed quota. Keep the allowlist for a controlled portfolio demo; add shared quotas and provider spend controls before broad public AI access. Scripts are sent to OpenAI only for AI reviews; local reviews stay in the browser. Saved reference links/images are not fetched or analyzed by the model.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new).
+No AI key is included. Live generation and Storage uploads require your configured services; mocked tests do not establish live service availability.
 
-1. **Push your code to GitHub using GitHub Desktop:**
-   - Open **GitHub Desktop** and log into your account.
-   - Go to **File > Add Local Repository...**
-   - Click **Choose...** and select the `/Users/aryangarg/Documents/Kraken/Ad creator` folder (the root folder containing this README).
-   - If prompted that it's "not a Git repository", click the **create a repository** link.
-     - Name: `adcreator-ai`
-     - Local path: Make sure it points to `/Users/aryangarg/Documents/Kraken/Ad creator`.
-     - Click **Create Repository**.
-   - Your files are now tracked. Give your commit a Summary name like "Initial commit" at the bottom left, and click the blue **Commit to main** button.
-   - Click the **Publish repository** button at the very top right of the app window.
-   - Keep "Keep this code private" checked if you prefer, and click **Publish repository**.
+## Verification
 
-2. **Import to Vercel:**
-   - Log in to [Vercel](https://vercel.com/) and click **Add New... > Project**.
-   - Import your newly created `adcreator-ai` GitHub repository.
-   - Vercel will automatically detect that it's a Next.js project.
-   - Click **Deploy**.
+```
+npm run lint
+npm test
+npm run build
+```
 
-3. **Configure Firebase Authorized Domains:**
-   Once Vercel gives you a production URL (e.g., `https://adcreator-ai.vercel.app`), go to your Firebase Console:
-   - Go to **Authentication > Settings > Authorized domains**
-   - Click **Add domain** and paste your Vercel URL. This ensures Google Sign-In works in production!
+Tests exercise product/offer preservation in local drafts, incorrect signal detection, all platform/voice combinations, and the AI route's missing configuration, authentication, allowlist, validation and provider-response handling. API responses are mocked, so tests incur no provider usage. `npm run build -- --webpack` is also supported when Turbopack is restricted by a sandbox.
 
-## Architecture per PRD
+## Deployment
 
-This MVP scaffolding establishes the foundation (Phases 1-4) outlined in the primary Product Requirements Document (PRD).
+Import the existing GitHub repository into Vercel as a Next.js project. Configure environment variables there and redeploy after changing them. Production Firebase authentication requires the Vercel/custom hostname in authorized domains. Apply Storage rules separately. The project uses system fonts, so building does not depend on reaching Google Fonts.
 
-The next technical phases involve:
-- Orchestrating the Variant Generation Engine using the OpenAI API.
-- Setting up a database (e.g., Firebase Firestore) to persist User Projects and generated Angle Boards.
+## Editorial references
+
+Placement tips summarize official guidance, not guaranteed performance rules:
+
+- [TikTok creative guide](https://ads.tiktok.com/business/en/guides/what-is-ad-creative-guide)
+- [Meta Reels ads](https://www.facebook.com/business/ads/facebook-instagram-reels-ads) and [placement guide](https://www.facebook.com/business/ads-guide)
+- [Google video ad formats](https://support.google.com/google-ads/answer/2375464)
+- [LinkedIn video tips](https://business.linkedin.com/advertise/ads/sponsored-content/video-ads/tips)
+- [Mailchimp voice and tone](https://styleguide.mailchimp.com/voice-and-tone/): voice is consistent brand personality; tone adapts to context. The app's eight presets are editorial choices, not platform targeting categories.
+- [OpenAI structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
+- [Firebase Auth REST API](https://firebase.google.com/docs/reference/rest/auth)
+
+Example brands and claims are fictional. Copy frameworks are starting structures to test, not evidence that an ad will convert.
